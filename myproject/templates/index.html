@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Inicio</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css"
+    />
+    <style>
+      .circle-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px;
+        transition: background-color 0.3s;
+      }
+
+      .circle-icon:hover {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .icon {
+        font-size: 40px;
+      }
+      .navbar-nav.ml-auto {
+        margin-left: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="{% url 'index' %}">Inicio</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_producto' %}"
+              >Agregar Producto</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_marca' %}"
+              >Agregar Marcas</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_categoria' %}"
+              >Agregar Categorías</a
+            >
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+    <div class="container text-center">
+      <h1 class="my-4">Bienvenido a la Librería</h1>
+      <div class="row">
+        <div class="col-md-4 d-flex flex-column align-items-center">
+          <a href="{% url 'agregar_producto' %}" class="circle-icon">
+            <i class="bi bi-plus-circle icon"></i>
+          </a>
+          <p>Agregar Producto</p>
+        </div>
+        <div class="col-md-4 d-flex flex-column align-items-center">
+          <a href="{% url 'agregar_marca' %}" class="circle-icon">
+            <i class="bi bi-plus-circle icon"></i>
+          </a>
+          <p>Agregar Marca</p>
+        </div>
+        <div class="col-md-4 d-flex flex-column align-items-center">
+          <a href="{% url 'agregar_categoria' %}" class="circle-icon">
+            <i class="bi bi-plus-circle icon"></i>
+          </a>
+          <p>Agregar Categoria</p>
+        </div>
+        <div class="col-md-4 d-flex flex-column align-items-center">
+          <a href="{% url 'lista_productos' %}" class="circle-icon">
+            <i class="bi bi-search icon"></i>
+          </a>
+          <p>Buscar Producto</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"
+      integrity="sha384-pzjw8f+ua7Kw1TIqT3FfjHy2ONXkjn38CLf3fA5iTVzTXLkOMgfK5u5wX5pLT65R"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgpsiP4PY2IRrH49dBxjzg5xDjOJclf5gHfXEEukFGO0c2lI5Z4"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

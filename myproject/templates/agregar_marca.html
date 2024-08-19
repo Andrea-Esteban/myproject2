@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Agregar Marca</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="{% url 'index' %}">Inicio</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_producto' %}"
+              >Agregar Producto</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_marca' %}"
+              >Agregar Marcas</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_categoria' %}"
+              >Agregar Categorías</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h4 class="mb-0">Agregar Nueva Marca</h4>
+            </div>
+            <div class="card-body">
+              <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="nombre">Nombre de la Marca:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nombre"
+                    name="nombre"
+                    placeholder="Ingresa el nombre de la marca"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                  Agregar Marca
+                </button>
+              </form>
+              <h2 class="mt-5">Marcas Existentes</h2>
+              <table class="table table-striped mt-3">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for marca in marcas %}
+                  <tr>
+                    <td>{{ marca.nombre }}</td>
+                    <td>
+                      <!-- Botón para abrir el modal -->
+                      <button
+                        type="button"
+                        class="btn btn-danger btn-sm"
+                        data-toggle="modal"
+                        data-target="#confirmDeleteModal"
+                        data-id="{{ marca.id }}"
+                        data-nombre="{{ marca.nombre }}"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="2">No hay marcas registradas.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div
+      class="modal fade"
+      id="confirmDeleteModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="confirmDeleteModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmDeleteModalLabel">
+              Confirmar Eliminación
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            ¿Estás seguro de que deseas eliminar la marca
+            <strong id="marcaNombre"></strong>?
+          </div>
+          <div class="modal-footer">
+            <form id="deleteForm" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="id" id="marcaId" />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // Script para manejar el modal
+      $("#confirmDeleteModal").on("show.bs.modal", function (event) {
+        var button = $(event.relatedTarget); // Botón que abre el modal
+        var id = button.data("id"); // Extrae el ID de la marca del atributo data
+        var nombre = button.data("nombre"); // Extrae el nombre de la marca del atributo data
+        var modal = $(this);
+        modal.find("#marcaNombre").text(nombre);
+        modal.find("#marcaId").val(id);
+        modal
+          .find("#deleteForm")
+          .attr("action", '{% url "eliminar_marca" 0 %}'.replace("0", id));
+      });
+    </script>
+  </body>
+</html>

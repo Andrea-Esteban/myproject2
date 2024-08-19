@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Buscar Producto</title>
+  </head>
+  <body>
+    <h1>Buscar Producto</h1>
+    <form method="get">
+      <label for="query">Buscar:</label>
+      <input type="text" id="query" name="query" required />
+      <button type="submit">Buscar</button>
+    </form>
+
+    {% if resultados %}
+    <h2>Resultados:</h2>
+    <ul>
+      {% for producto in resultados %}
+      <li>
+        {{ producto.nombre }} - {{ producto.precio }} -
+        <a href="{% url 'marcar_agotado' producto.codigo %}"
+          >Marcar como Agotado</a
+        >
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No se encontraron productos.</p>
+    {% endif %}
+  </body>
+</html>

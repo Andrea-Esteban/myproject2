@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Agregar Producto</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="{% url 'index' %}">Inicio</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_producto' %}"
+              >Agregar Producto</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_marca' %}"
+              >Agregar Marcas</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_categoria' %}"
+              >Agregar Categorías</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <h1 class="mb-4">Agregar Nuevo Producto</h1>
+      <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nombre"
+            name="nombre"
+            required
+          />
+          <div class="invalid-feedback">
+            Por favor, ingresa el nombre del producto.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="precio">Precio:</label>
+          <input
+            type="number"
+            step="0.01"
+            class="form-control"
+            id="precio"
+            name="precio"
+            required
+          />
+          <div class="invalid-feedback">
+            Por favor, ingresa el precio del producto.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="stock">Stock:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="stock"
+            name="stock"
+            required
+          />
+          <div class="invalid-feedback">
+            Por favor, ingresa la cantidad en stock.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="marca">Marca:</label>
+          <select class="form-control" id="marca" name="marca" required>
+            <option value="">Selecciona una marca</option>
+            {% for marca in marcas %}
+            <option value="{{ marca.id }}">{{ marca.nombre }}</option>
+            {% endfor %}
+          </select>
+          <div class="invalid-feedback">Por favor, selecciona una marca.</div>
+        </div>
+        <div class="form-group">
+          <label for="categoria">Categoría:</label>
+          <select class="form-control" id="categoria" name="categoria" required>
+            <option value="">Selecciona una categoría</option>
+            {% for categoria in categorias %}
+            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+            {% endfor %}
+          </select>
+          <div class="invalid-feedback">
+            Por favor, selecciona una categoría.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="codigo">Código:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="codigo"
+            name="codigo"
+            required
+          />
+          <div class="invalid-feedback">
+            Por favor, ingresa el código del producto.
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar Producto</button>
+      </form>
+
+      <h2 class="mt-5">Productos Existentes</h2>
+      <form method="get" action="{% url 'buscar_productos' %}" class="mb-4">
+        <div class="form-row">
+          <div class="col">
+            <input
+              type="text"
+              class="form-control"
+              id="buscar"
+              name="q"
+              placeholder="Buscar productos..."
+              value="{{ request.GET.q }}"
+            />
+          </div>
+          <div class="col">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+          </div>
+          <div class="col">
+            <a href="{% url 'buscar_productos' %}" class="btn btn-secondary">
+              Limpiar Búsqueda
+            </a>
+          </div>
+        </div>
+      </form>
+
+      <form method="post" action="{% url 'marcar_agotado' %}">
+        {% csrf_token %}
+        <table class="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Marca</th>
+              <th>Categoría</th>
+              <th>Código</th>
+              <th>Agotado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for producto in productos %}
+            <tr>
+              <td>{{ producto.nombre }}</td>
+              <td>{{ producto.precio }}</td>
+              <td>{{ producto.stock }}</td>
+              <td>{{ producto.marca.nombre }}</td>
+              <td>{{ producto.categoria.nombre }}</td>
+              <td>{{ producto.codigo }}</td>
+              {% if producto.stock == 0 %}
+              <td>
+                <input
+                  type="checkbox"
+                  name="agotado_{{ producto.id }}"
+                  checked
+                />
+              </td>
+              {% else %}
+              <td>
+                <input type="checkbox" name="agotado_{{ producto.id }}" />
+              </td>
+              {% endif %}
+
+              <td>
+                <!-- Botón para abrir el modal de eliminación -->
+                <button
+                  class="btn btn-danger btn-sm"
+                  data-toggle="modal"
+                  data-target="#eliminarModal"
+                  data-id="{{ producto.id }}"
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8">No hay productos registrados.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <button type="submit" class="btn btn-warning">
+          Actualizar Agotado
+        </button>
+      </form>
+      <br />
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div
+      class="modal fade"
+      id="eliminarModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="eliminarModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="eliminarModalLabel">
+              Confirmación de Eliminación
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            ¿Estás seguro de que deseas eliminar este producto?
+          </div>
+          <div class="modal-footer">
+            <form id="eliminarForm" method="post" action="">
+              {% csrf_token %}
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      $("#eliminarModal").on("show.bs.modal", function (event) {
+        var button = $(event.relatedTarget); // Botón que activó el modal
+        var id = button.data("id"); // Extrae el ID del producto
+        var action = "{% url 'eliminar_producto' 'id' %}".replace("id", id); // Construye la URL de eliminación
+        var modal = $(this);
+        modal.find("#eliminarForm").attr("action", action); // Establece la acción del formulario
+      });
+    </script>
+  </body>
+</html>
