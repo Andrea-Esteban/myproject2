@@ -20,7 +20,7 @@ class Producto(models.Model):
     stock = models.PositiveIntegerField()
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
-    codigo = models.CharField(max_length=100)
+    codigo = models.CharField(max_length=100, unique=True)  # Campo único
 
     def __str__(self):
         return self.nombre

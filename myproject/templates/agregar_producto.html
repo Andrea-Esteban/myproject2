@@ -10,6 +10,7 @@
   </head>
   <body>
     <!-- Navbar -->
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="{% url 'index' %}">Inicio</a>
       <button
@@ -43,7 +44,6 @@
         </ul>
       </div>
     </nav>
-
     <div class="container mt-5">
       <h1 class="mb-4">Agregar Nuevo Producto</h1>
       <form method="post" class="needs-validation" novalidate>
@@ -125,9 +125,12 @@
         </div>
         <button type="submit" class="btn btn-primary">Agregar Producto</button>
       </form>
-
       <h2 class="mt-5">Productos Existentes</h2>
-      <form method="get" action="{% url 'buscar_productos' %}" class="mb-4">
+      <form
+        method="get"
+        action="{% url 'buscar_productos_lista' %}"
+        class="mb-4"
+      >
         <div class="form-row">
           <div class="col">
             <input
@@ -143,14 +146,16 @@
             <button type="submit" class="btn btn-primary">Buscar</button>
           </div>
           <div class="col">
-            <a href="{% url 'buscar_productos' %}" class="btn btn-secondary">
-              Limpiar Búsqueda
-            </a>
+            <a
+              href="{% url 'buscar_productos_lista' %}"
+              class="btn btn-secondary"
+              >Limpiar Búsqueda</a
+            >
           </div>
         </div>
       </form>
 
-      <form method="post" action="{% url 'marcar_agotado' %}">
+      <form method="post" action="{% url 'marcar_agotado_lista' %}">
         {% csrf_token %}
         <table class="table table-striped mt-3">
           <thead>
@@ -187,9 +192,14 @@
                 <input type="checkbox" name="agotado_{{ producto.id }}" />
               </td>
               {% endif %}
-
               <td>
-                <!-- Botón para abrir el modal de eliminación -->
+                <!-- Edit button -->
+                <a
+                  href="{% url 'editar_producto' producto.codigo %}"
+                  class="btn btn-info btn-sm"
+                  >Editar</a
+                >
+                <!-- Eliminar button -->
                 <button
                   class="btn btn-danger btn-sm"
                   data-toggle="modal"
@@ -258,14 +268,14 @@
       </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
       $("#eliminarModal").on("show.bs.modal", function (event) {
         var button = $(event.relatedTarget); // Botón que activó el modal
         var id = button.data("id"); // Extrae el ID del producto
-        var action = "{% url 'eliminar_producto' 'id' %}".replace("id", id); // Construye la URL de eliminación
+        var action = "{% url 'eliminar_producto' id='0' %}".replace("0", id); // Construye la URL de eliminación
         var modal = $(this);
         modal.find("#eliminarForm").attr("action", action); // Establece la acción del formulario
       });
